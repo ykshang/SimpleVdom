@@ -1,21 +1,26 @@
-const path = require("path");
+const path = require('path');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
-  mode: "development",
-  entry: "./src/index.js",
-  cache: {
-    type: "filesystem",
-  },
+  mode: 'development',
+  entry: './src/index.js',
   output: {
+    path: path.resolve(__dirname, 'dist'), 
+    filename: 'bundle.js',
     clean: true,
-    publicPath: "/xuni/",
-    path: path.resolve(__dirname, "dist"),
-    filename: "bundle.js",
   },
   devServer: {
-    static: "www",
-    port: 8090,
+    static: {
+      directory: path.join(__dirname, 'dist'),
+    },
+    compress: true,
     liveReload: true,
+    port: 9000,
     hot: true,
   },
+  plugins: [
+    new HtmlWebpackPlugin({
+      template: './index.html',
+    }),
+  ],
 };
