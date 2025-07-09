@@ -25,10 +25,10 @@ const container = document.getElementById("container");
 patch(container, vnode1);
 
 const vnode2 = h("ul", {}, [
+  h("li", {}, "444"),
   h("li", {}, "111"),
   h("li", {}, "222"),
   h("li", {}, "333"),
-  h("li", {}, "444"),
 ]);
 
 // 点击按钮 将Vnode1 变更为 vnode2
