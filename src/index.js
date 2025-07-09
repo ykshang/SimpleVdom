@@ -16,19 +16,19 @@ const patch = init([
 ]);
 
 const vnode1 = h("ul", {}, [
-  h("li", {}, "111"),
-  h("li", {}, "222"),
-  h("li", {}, "333"),
+  h("li", { key: "li-1" }, "111"),
+  h("li", { key: "li-2" }, "222"),
+  h("li", { key: "li-3" }, "333"),
 ]);
 
 const container = document.getElementById("container");
 patch(container, vnode1);
 
 const vnode2 = h("ul", {}, [
-  h("li", {}, "444"),
-  h("li", {}, "111"),
-  h("li", {}, "222"),
-  h("li", {}, "333"),
+  h("li", { key: "li-1" }, "111"),
+  h("li", { key: "li-2" }, "222"),
+  h("li", { key: "li-3" }, "333"),
+  h("li", { key: "li-4" }, "444"),
 ]);
 
 // 点击按钮 将Vnode1 变更为 vnode2
