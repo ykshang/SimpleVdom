@@ -19,19 +19,19 @@ export default function render(selector, data, content) {
     return vnode(selector, data, undefined, content, undefined);
   } else if (Array.isArray(content)) {
     // 说明是数组 形态2
-    // let children = [];
-    // for (let i = 0; i < content.length; i++) {
-    //   const element = content[i];
-    //   if (typeof element !== "object" || !element.hasOwnProperty("selector")) {
-    //     throw new Error("第三个参数的数组中必须传入 render 函数");
-    //   } else {
-    //     // 不需要再次执行 element()，因为在调用的时候，就已经是执行语句。
-    //     // 只需要收集结果即可
-    //     children.push(element);
-    //   }
-    // }
-    // return vnode(selector, data, children, undefined, undefined);
-    return vnode(selector, data, content, undefined, undefined);
+    let children = [];
+    for (let i = 0; i < content.length; i++) {
+      const element = content[i];
+      if (typeof element !== "object" || !element.hasOwnProperty("selector")) {
+        throw new Error("第三个参数的数组中必须传入 render 函数");
+      } else {
+        // 不需要再次执行 element()，因为在调用的时候，就已经是执行语句。
+        // 只需要收集结果即可
+        children.push(element);
+      }
+    }
+    return vnode(selector, data, children, undefined, undefined);
+    // return vnode(selector, data, content, undefined, undefined);
   } else if (typeof content == "object" && content.hasOwnProperty("selector")) {
     // 说明是对象 形态3
     return vnode(selector, data, content, undefined, undefined);
