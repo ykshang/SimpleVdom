@@ -34,7 +34,8 @@ export default function render(selector, data, content) {
     // return vnode(selector, data, content, undefined, undefined);
   } else if (typeof content == "object" && content.hasOwnProperty("selector")) {
     // 说明是对象 形态3
-    return vnode(selector, data, content, undefined, undefined);
+    let children = [content];
+    return vnode(selector, data, children, undefined, undefined);
   } else {
     throw new Error("传入的第三个参数类型不匹配");
   }
