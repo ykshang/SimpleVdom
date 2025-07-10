@@ -11,6 +11,12 @@ export default function (vnode, pivot) {
     // 文本节点，无子节点
     domNode.innerText = vnode.text;
     // 操作dom，插入节点
-    document.body.insertBefore(domNode, pivot);
+    pivot.parentNode.insertBefore(domNode, pivot);
+  } else if (Array.isArray(vnode.children), vnode.children.length > 0) {
+    // 子节点是数组
+    for (let i = 0; i < vnode.children.length; i++) {
+      const element = vnode.children[i];
+      // createElement(element, domNode);
+    }
   }
 }
