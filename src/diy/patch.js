@@ -17,14 +17,15 @@ export default function (oldVnode, newVnode) {
   if (sameNode(oldVnode, newVnode)) {
     console.log("相同节点");
   } else {
-    console.log("不相同，需要移除旧的，插入新的");
-    console.log("旧节点 oldVnode：", oldVnode);
+    // 移除旧节点，插入新节点
     let newVnodeElm = createElement(newVnode);
     // 需要确保 oldVnode 存在父节点
     // 在老节点之前插入新节点
     if (oldVnode.element.parentNode && newVnodeElm) {
       oldVnode.element.parentNode.insertBefore(newVnodeElm, oldVnode.element);
     }
+    // 删除老节点
+    oldVnode.element.parentNode.removeChild(oldVnode.element);
   }
 
   // if (oldVnode.sel === newVnode.sel && oldVnode.key === newVnode.key) {

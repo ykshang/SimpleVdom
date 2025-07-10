@@ -20,4 +20,10 @@ const vnode2 = render("ul", {}, [
 
 console.log(vnode1);
 console.log(vnode2);
-patch(container, vnode2);
+// patch(container, vnode2);
+
+// 点击按钮 将Vnode1 变更为 vnode2
+const btn = document.getElementById("btn");
+btn.onclick = function () {
+  patch(container, vnode2);
+};
