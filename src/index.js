@@ -7,4 +7,4 @@ const vnode2 = render("ul", {}, [
   render("li", {}, "1"),
   render("li", {}, "2"),
 ]);
-patch(container, vnode2);
+patch(container, vnode1);

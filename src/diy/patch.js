@@ -18,7 +18,11 @@ export default function (oldVnode, newVnode) {
     console.log("相同节点");
   } else {
     console.log("不相同，需要移除旧的，插入新的");
-    createElement(newVnode, oldVnode.elm);
+    let newVnodeElm = createElement(newVnode);
+    // 插入新节点
+    if (oldVnode.elm.parentNode && newVnodeElm) {
+      oldVnode.elm.parentNode.insertBefore(newVnodeElm, oldVnode.element);
+    }
   }
 
   // if (oldVnode.sel === newVnode.sel && oldVnode.key === newVnode.key) {
