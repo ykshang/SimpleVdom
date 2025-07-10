@@ -21,17 +21,19 @@ export default function (oldVnode, newVnode) {
     createElement(newVnode, oldVnode.elm);
   }
 
-  if (oldVnode.sel === newVnode.sel && oldVnode.key === newVnode.key) {
-    patch(oldVnode, newVnode);
-  } else {
-    let newVnodeElm = createElm(newVnode);
-    if (oldVnode.elm.parentNode && newVnodeElm) {
-      oldVnode.elm.parentNode.insertBefore(newVnodeElm, oldVnode.elm);
-    }
-    oldVnode.elm = null;
-  }
+  // if (oldVnode.sel === newVnode.sel && oldVnode.key === newVnode.key) {
+  //   patch(oldVnode, newVnode);
+  // } else {
+  //   let newVnodeElm = createElm(newVnode);
+  //   if (oldVnode.elm.parentNode && newVnodeElm) {
+  //     oldVnode.elm.parentNode.insertBefore(newVnodeElm, oldVnode.elm);
+  //   }
+  //   oldVnode.elm = null;
+  // }
 }
 
 function sameNode(oldVnode, newVnode) {
-  return oldVnode.sel === newVnode.sel && oldVnode.key === newVnode.key;
+  return (
+    oldVnode.selector === newVnode.selector && oldVnode.key === newVnode.key
+  );
 }
