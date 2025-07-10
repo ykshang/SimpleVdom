@@ -2,7 +2,7 @@ import { isDef, isUnDef } from "./util";
 
 // 把vnode 转换为 DOM节点
 export default function createElement(vnode) {
-  console.log("把 vnode 转换为 DOM 节点");
+  // console.log("把 vnode 转换为 DOM 节点");
   let domNode = document.createElement(vnode.selector);
   if (
     isDef(vnode.text) &&
