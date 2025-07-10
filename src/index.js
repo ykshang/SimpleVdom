@@ -6,5 +6,18 @@ const vnode1 = render("h1", {}, "你好");
 const vnode2 = render("ul", {}, [
   render("li", {}, "1"),
   render("li", {}, "2"),
+  render("li", {}, [
+    render("div", {}, [
+      render("ol", {}, [
+        render("li", {}, "A"),
+        render("li", {}, "B"),
+        render("li", {}, "C"),
+      ]),
+    ]),
+  ]),
+  render("li", {}, "4"),
 ]);
-patch(container, vnode1);
+
+console.log(vnode1);
+console.log(vnode2);
+patch(container, vnode2);

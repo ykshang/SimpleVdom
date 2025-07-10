@@ -1,10 +1,10 @@
 import vnode from "./vnode";
-import { isDef } from "./util";
+import { isDef, isUnDef } from "./util";
 import createElement from "./createElement";
 
 export default function (oldVnode, newVnode) {
   // 此时 oldVnode 是 DOM 节点，需要转换为虚拟节点
-  if (isDef(oldVnode.selector)) {
+  if (isUnDef(oldVnode.selector)) {
     oldVnode = vnode(
       oldVnode.tagName.toLowerCase(),
       {},
@@ -18,10 +18,12 @@ export default function (oldVnode, newVnode) {
     console.log("相同节点");
   } else {
     console.log("不相同，需要移除旧的，插入新的");
+    console.log("旧节点 oldVnode：", oldVnode);
     let newVnodeElm = createElement(newVnode);
-    // 插入新节点
-    if (oldVnode.elm.parentNode && newVnodeElm) {
-      oldVnode.elm.parentNode.insertBefore(newVnodeElm, oldVnode.element);
+    // 需要确保 oldVnode 存在父节点
+    // 在老节点之前插入新节点
+    if (oldVnode.element.parentNode && newVnodeElm) {
+      oldVnode.element.parentNode.insertBefore(newVnodeElm, oldVnode.element);
     }
   }
 
