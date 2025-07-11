@@ -56,38 +56,7 @@ function patchVnode(oldVnode, newVnode) {
     console.log("newVnode 没有 text");
     // oldVnode 存在子节点列表
     if (isDef(oldVnode.children) && oldVnode.children.length > 0) {
-      // 新的存在子节点列表，此时最复杂，新老都有子节点
-      let uIndex = 0; // 代表下边，等于 i
-      for (let i = 0; i < newVnode.children.length; i++) {
-        let ch = newVnode.children[i];
-        let isExistFlg = false;
-        for (let j = 0; j < oldVnode.children.length; j++) {
-          const oCh = oldVnode.children[j];
-          if (sameNode(oCh, ch)) {
-            // 相同节点，精细化比较
-            isExistFlg = true;
-            // break;
-          }
-        }
-        if (!isExistFlg) {
-          // 如果节点不存在，创建 dom 并插入
-          console.log(i, ch);
-          let chDom = createElement(ch);
-          ch.element = chDom;
-          // 遍历的时候需要注意下标，针对场景 新 [1,2,3,6,7,4,5]，老 [1,2,3,4] 的情况
-          if (uIndex < oldVnode.children.length) {
-            // 获取要插入的元素在 newVnode里的下标，并插入到 oldVnode.element 中对应的元素之前。
-            oldVnode.element.insertBefore(
-              chDom,
-              oldVnode.children[uIndex].element
-            );
-          } else {
-            oldVnode.element.appendChild(chDom);
-          }
-        } else {
-          uIndex++; // 向后移动下标
-        }
-      }
+      // 新老都有子节点，此时最复杂
     } else {
       // oldVnode 没有子节点列表，newVnode 有子节点列表
       // 清空 oldVnode 的文字
