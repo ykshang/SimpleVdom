@@ -7,7 +7,7 @@
  * @param {*} element 对应的 DOM 元素对象，他的值是实时获取
  * @returns
  */
-export default function (selector, data, children, text, element) {
+export function vnode(selector, data, children, text, element) {
   return {
     selector,
     data,
@@ -15,4 +15,15 @@ export default function (selector, data, children, text, element) {
     text,
     element,
   };
+}
+
+export function addVnodes(parentElement, vnodes, startIndex, endIndex) {
+  for (let i = startIndex; i <= endIndex; i++) {
+    parentElement.appendChild(vnodes[i].element);
+  }
+}
+export function removeVnodes(parentElement, vnodes, startIndex, endIndex) {
+  for (let i = startIndex; i <= endIndex; i++) {
+    parentElement.removeChild(vnodes[i].element);
+  }
 }

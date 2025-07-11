@@ -1,4 +1,4 @@
-import vnode from "./vnode.js";
+import { vnode } from "./vnode.js";
 /**
  *
  * @param {*} selector 选择器

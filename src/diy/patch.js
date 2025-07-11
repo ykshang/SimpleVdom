@@ -1,4 +1,4 @@
-import vnode from "./vnode";
+import { vnode, addVnodes, removeVnodes } from "./vnode";
 import { isDef, isUnDef } from "./util";
 import createElement from "./createElement";
 
@@ -20,7 +20,7 @@ export function patch(oldVnode, newVnode) {
     // 移除旧节点，插入新节点
     let newVnodeElm = createElement(newVnode);
     // 需要确保 oldVnode 存在父节点
-    // 在老节点之前插入新节点
+    // 在老节点之首插入新节点
     if (oldVnode.element.parentNode && newVnodeElm) {
       oldVnode.element.parentNode.insertBefore(newVnodeElm, oldVnode.element);
     }
@@ -46,7 +46,7 @@ function patchVnode(oldVnode, newVnode) {
     (isUnDef(newVnode.children) || newVnode.children.length === 0)
   ) {
     // newVnode 有 text，同时没有children
-    console.log("newVnode 有 text 没有 children, 待完善该部分逻辑");
+    // console.log("newVnode 有 text 没有 children, 待完善该部分逻辑");
     if (newVnode.text !== oldVnode.text) {
       // 如果新的虚拟节点和老的虚拟节点的text 不同，直接写入。如果老节点下边有子节点，直接被覆盖删除
       oldVnode.element.innerText = newVnode.text;
@@ -57,6 +57,7 @@ function patchVnode(oldVnode, newVnode) {
     // oldVnode 存在子节点列表
     if (isDef(oldVnode.children) && oldVnode.children.length > 0) {
       // 新老都有子节点，此时最复杂
+      updateChildren(oldVnode.element, oldVnode.children, newVnode.children);
     } else {
       // oldVnode 没有子节点列表，newVnode 有子节点列表
       // 清空 oldVnode 的文字
@@ -70,6 +71,63 @@ function patchVnode(oldVnode, newVnode) {
         oldVnode.element.appendChild(chElm);
       }
     }
+  }
+}
+/**
+ * 对比子节点
+ * @param {*} params
+ */
+function updateChildren(parentElement, oldChildren, newChildren) {
+  let oldStartIdx = 0;
+  let oldEndIdx = oldChildren.length - 1;
+  let newStartIdx = 0;
+  let newEndIdx = newChildren.length - 1;
+  let oldStartVnode = oldChildren[oldStartIdx];
+  let oldEndVnode = oldChildren[oldEndIdx];
+  let newStartVnode = newChildren[newStartIdx];
+  let newEndVnode = newChildren[newEndIdx];
+  while (oldStartIdx <= oldEndIdx && newStartIdx <= newEndIdx) {
+    if (sameNode(oldStartVnode, newStartVnode)) {
+      // 新首 vs 旧首
+      patchVnode(oldStartVnode, newStartVnode); // 相同节点，精细化比较
+      // 向后移动旧首、新首的指针
+      oldStartVnode = oldChildren[++oldStartIdx];
+      newStartVnode = newChildren[++newStartIdx];
+    } else if (sameNode(oldEndVnode, newEndVnode)) {
+      // 新尾 vs 旧尾
+      patchVnode(oldEndVnode, newEndVnode); // 相同节点，精细化比较
+      // 向后移动新尾、旧尾的指针
+      oldEndVnode = oldChildren[--oldEndIdx];
+      newEndVnode = newChildren[--newEndIdx];
+    } else if (sameNode(oldStartVnode, newEndVnode)) {
+      // 新尾 vs 旧首
+      patchVnode(oldStartVnode, newEndVnode); // 相同节点，精细化比较
+      // 移动旧首节点到旧尾节点的前边
+      parentElement.insertBefore(oldStartVnode.element, oldEndVnode.element);
+      // 移动旧首、新尾的指针
+      oldStartVnode = oldChildren[++oldStartIdx];
+      newEndVnode = newChildren[--newEndIdx];
+    } else if (sameNode(oldEndVnode, newStartVnode)) {
+      // 新首 vs 旧尾
+      patchVnode(oldEndVnode, newStartVnode); // 相同节点，精细化比较
+      parentElement.insertBefore(oldEndVnode.element, newStartVnode.element);
+      // 移动旧尾、新首的指针
+      oldEndVnode = oldChildren[--oldEndIdx];
+      newStartVnode = newChildren[++newStartIdx];
+    } else {
+      console.log("以上情况都不满足");
+      // 以上情况都不满足
+    }
+  }
+  // 双端对比结束
+  // 旧列表遍历完了，说明新列表有剩，需要添加新列表中剩余的节点
+  if (oldStartIdx > oldEndIdx) {
+    // 旧节点先遍历完，添加剩余新节点
+    addVnodes(parentElement, newChildren, newStartIdx, newEndIdx);
+    // 旧列表遍历完了，说明旧列表有剩，需要删除旧列表中剩余的节点
+  } else if (newStartIdx > newEndIdx) {
+    // 新节点先遍历完，删除剩余旧节点
+    removeVnodes(parentElement, oldChildren, oldStartIdx, oldEndIdx);
   }
 }
 /**

@@ -14,13 +14,9 @@ patch(container, vnode1);
 console.log("vnode1", vnode1);
 
 const vnode2 = h("ul", {}, [
-  h("li", { key: "A" }, "A"),
-  h("li", { key: "B" }, "B"),
-  h("li", { key: "M" }, "M"),
-  h("li", { key: "N" }, "N"),
   h("li", { key: "C" }, "C"),
-  h("li", { key: "P" }, "P"),
-  h("li", { key: "Q" }, "Q"),
+  h("li", { key: "B" }, "B"),
+  h("li", { key: "A" }, "A"),
 ]);
 // const vnode2 = h("section", {}, '现在是文字');
 
