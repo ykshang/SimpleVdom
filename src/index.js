@@ -4,9 +4,9 @@ import { patch } from "./diy/patch.js";
 const container = document.getElementById("container");
 
 const vnode1 = h("ul", {}, [
-  h("li", {}, "A"),
-  h("li", {}, "B"),
-  h("li", {}, "C"),
+  h("li", { key: "A" }, "A"),
+  h("li", { key: "B" }, "B"),
+  h("li", { key: "C" }, "C"),
 ]);
 // const vnode1 = h("section", {}, "待替换的节点");
 patch(container, vnode1);
@@ -14,10 +14,12 @@ patch(container, vnode1);
 console.log("vnode1", vnode1);
 
 const vnode2 = h("ul", {}, [
-  h("li", {}, "A"),
-  h("li", {}, "B"),
-  h("li", {}, "C"),
-  h("li", {}, "D"),
+  h("li", { key: "A" }, "A"),
+  h("li", { key: "B" }, "B"),
+  h("li", { key: "M" }, "M"),
+  h("li", { key: "N" }, "N"),
+  h("li", { key: "C" }, "C"),
+  h("li", { key: "P" }, "P"),
 ]);
 // const vnode2 = h("section", {}, '现在是文字');
 
