@@ -74,12 +74,15 @@ function patchVnode(oldVnode, newVnode) {
           console.log(i, ch);
           let chDom = createElement(ch);
           ch.element = chDom;
+          // 遍历的时候需要注意下标，针对场景 新 [1,2,3,6,7,4,5]，老 [1,2,3,4] 的情况
           if (uIndex < oldVnode.children.length) {
-            // oldVnode.element 实时的指向对应的dom元素
+            // 获取要插入的元素在 newVnode里的下标，并插入到 oldVnode.element 中对应的元素之前。
             oldVnode.element.insertBefore(
               chDom,
               oldVnode.children[uIndex].element
             );
+          } else {
+            oldVnode.element.appendChild(chDom);
           }
         } else {
           // console.log(newVnode);
