@@ -85,7 +85,6 @@ function patchVnode(oldVnode, newVnode) {
             oldVnode.element.appendChild(chDom);
           }
         } else {
-          // console.log(newVnode);
           uIndex++; // 向后移动下标
         }
       }
