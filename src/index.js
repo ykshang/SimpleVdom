@@ -1,4 +1,4 @@
-import h from "./diy./diy/h.js";
+import h from "./diy/h.js";
 import { patch } from "./diy/patch.js";
 
 const container = document.getElementById("container");
