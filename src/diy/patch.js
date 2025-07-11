@@ -29,11 +29,6 @@ export function patch(oldVnode, newVnode) {
   }
 }
 
-function sameNode(oldVnode, newVnode) {
-  return (
-    oldVnode.selector === newVnode.selector && oldVnode.key === newVnode.key
-  );
-}
 /**
  *
  * @param {*} oldVnode
@@ -51,7 +46,7 @@ function patchVnode(oldVnode, newVnode) {
     (isUnDef(newVnode.children) || newVnode.children.length === 0)
   ) {
     // newVnode 有 text，同时没有children
-    console.log("newVnode 有 text");
+    console.log("newVnode 有 text 没有 children, 待完善该部分逻辑");
     if (newVnode.text !== oldVnode.text) {
       // 如果新的虚拟节点和老的虚拟节点的text 不同，直接写入。如果老节点下边有子节点，直接被覆盖删除
       oldVnode.element.innerText = newVnode.text;
@@ -62,6 +57,35 @@ function patchVnode(oldVnode, newVnode) {
     // oldVnode 存在子节点列表
     if (isDef(oldVnode.children) && oldVnode.children.length > 0) {
       // 新的存在子节点列表，此时最复杂，新老都有子节点
+      let uIndex = 0; // 代表下边，等于 i
+      for (let i = 0; i < newVnode.children.length; i++) {
+        let ch = newVnode.children[i];
+        let isExistFlg = false;
+        for (let j = 0; j < oldVnode.children.length; j++) {
+          const oCh = oldVnode.children[j];
+          if (sameNode(oCh, ch)) {
+            // 相同节点，精细化比较
+            isExistFlg = true;
+            // break;
+          }
+        }
+        if (!isExistFlg) {
+          // 如果节点不存在，创建 dom 并插入
+          console.log(i, ch);
+          let chDom = createElement(ch);
+          ch.element = chDom;
+          if (uIndex < oldVnode.children.length) {
+            // oldVnode.element 实时的指向对应的dom元素
+            oldVnode.element.insertBefore(
+              chDom,
+              oldVnode.children[uIndex].element
+            );
+          }
+        } else {
+          // console.log(newVnode);
+          uIndex++; // 向后移动下标
+        }
+      }
     } else {
       // oldVnode 没有子节点列表，newVnode 有子节点列表
       // 清空 oldVnode 的文字
@@ -76,4 +100,17 @@ function patchVnode(oldVnode, newVnode) {
       }
     }
   }
+}
+/**
+ *
+ * @param {} oldVnode
+ * @param {*} newVnode
+ * @returns {boolean}
+ * @desc 判断节点是否相同
+ */
+function sameNode(oldVnode, newVnode) {
+  return (
+    oldVnode.selector === newVnode.selector &&
+    oldVnode.data.key === newVnode.data.key
+  );
 }
