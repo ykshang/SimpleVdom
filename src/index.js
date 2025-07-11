@@ -20,6 +20,7 @@ const vnode2 = h("ul", {}, [
   h("li", { key: "N" }, "N"),
   h("li", { key: "C" }, "C"),
   h("li", { key: "P" }, "P"),
+  h("li", { key: "Q" }, "Q"),
 ]);
 // const vnode2 = h("section", {}, '现在是文字');
 
