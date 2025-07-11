@@ -7,7 +7,7 @@ import vnode from "./vnode.js";
  * @returns
  * @description 核心函数，用于创建虚拟节点
  */
-export default function render(selector, data, content) {
+export default function h(selector, data, content) {
   if (arguments.length !== 3) {
     throw new Error("对不起，必须传入三个参数");
   }
@@ -20,7 +20,7 @@ export default function render(selector, data, content) {
     for (let i = 0; i < content.length; i++) {
       const element = content[i];
       if (typeof element !== "object" || !element.hasOwnProperty("selector")) {
-        throw new Error("第三个参数的数组中必须传入 render 函数");
+        throw new Error("第三个参数的数组中必须传入 h 函数");
       } else {
         // 不需要再次执行 element()，因为在调用的时候，就已经是执行语句。
         // 只需要收集结果即可
