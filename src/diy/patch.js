@@ -145,6 +145,6 @@ function updateChildren(parentElement, oldChildren, newChildren) {
 function sameNode(oldVnode, newVnode) {
   return (
     oldVnode.selector === newVnode.selector &&
-    oldVnode.data.key === newVnode.data.key
+    oldVnode.key === newVnode.key
   );
 }
