@@ -11,27 +11,32 @@ import createElement from "./createElement";
  * @returns
  */
 export function vnode(selector, data, children, text, element) {
+  const key = data.key;
   return {
     selector,
     data,
     children,
     text,
     element,
+    key,
   };
 }
 
 export function addVnodes(parentElement, vnodes, startIndex, endIndex) {
   for (let i = startIndex; i <= endIndex; i++) {
     let ch = vnodes[i];
-    // 需要判断对应的DOM节点是否存在，不存在需要创建
+    // 需要判断对应的DOM节点是否存在。不能直接挂载。
     if (isUnDef(ch.element)) {
+      // 创建dom,并挂载到虚拟节点上
       ch.element = createElement(ch);
     }
+    // 追加到父元素上
     parentElement.appendChild(ch.element);
   }
 }
 export function removeVnodes(parentElement, vnodes, startIndex, endIndex) {
   for (let i = startIndex; i <= endIndex; i++) {
+    // 移除子DOM节点
     parentElement.removeChild(vnodes[i].element);
   }
 }
