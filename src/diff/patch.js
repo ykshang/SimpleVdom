@@ -74,10 +74,46 @@ function patchVnode(oldVnode, newVnode) {
   }
 }
 /**
+ * 辅助函数
+ */
+function outputCurrentStatus(parentElement, oldChildren, newChildren) {
+  console.log("------------------当前状态------------------");
+  console.log(new Date().toLocaleTimeString());
+  // 输出当前dom节点列表
+  let len = parentElement.children.length;
+  let childElmList = [];
+  for (let i = 0; i < len; i++) {
+    const element = parentElement.children[i];
+    childElmList.push(element.innerHTML);
+  }
+  console.log("当前dom节点：" + childElmList.join(", "));
+
+  // 输出当前的旧节点列表
+  let oldChildrenList = [];
+  for (let j = 0; j < oldChildren.length; j++) {
+    const oldCh = oldChildren[j];
+    if (oldCh) {
+      oldChildrenList.push(oldCh.text);
+    } else {
+      oldChildrenList.push("undefined");
+    }
+  }
+  console.log("当前旧节点：" + oldChildrenList.join(", "));
+  // 输出当前的新节点列表
+  // 输出当前的旧节点列表
+  let newChildrenList = [];
+  for (let j = 0; j < newChildren.length; j++) {
+    newChildrenList.push(newChildren[j].text);
+  }
+  console.log("当前新节点：" + newChildrenList.join(", "));
+}
+
+/**
  * 对比子节点
  * @param {*} params
  */
 function updateChildren(parentElement, oldChildren, newChildren) {
+  outputCurrentStatus(parentElement, oldChildren, newChildren);
   let oldStartIdx = 0;
   let oldEndIdx = oldChildren.length - 1;
   let newStartIdx = 0;
@@ -94,9 +130,11 @@ function updateChildren(parentElement, oldChildren, newChildren) {
       oldStartVnode = oldChildren[++oldStartIdx];
     } else if (isUnDef(oldEndVnode)) {
       oldEndVnode = oldChildren[--oldEndIdx];
-    }
-
-    if (sameNode(oldStartVnode, newStartVnode)) {
+    } else if (isUnDef(newStartVnode)) {
+      newStartVnode = newChildren[++newStartIdx];
+    } else if (isUnDef(newEndVnode)) {
+      newEndVnode = newChildren[--newEndIdx];
+    } else if (sameNode(oldStartVnode, newStartVnode)) {
       // 新首 vs 旧首
       console.log("命中 1：新尾 vs 旧尾");
       patchVnode(oldStartVnode, newStartVnode); // 相同节点，精细化比较
@@ -146,6 +184,8 @@ function updateChildren(parentElement, oldChildren, newChildren) {
           newStartVnode.element,
           oldStartVnode.element
         );
+        // 移动旧首的指针
+        oldStartVnode = oldChildren[++oldStartIdx];
       } else {
         // 旧节点列表中存在新节点的 key
         // 移动旧节点到新节点的前边
@@ -155,8 +195,6 @@ function updateChildren(parentElement, oldChildren, newChildren) {
           oldStartVnode.element
         );
       }
-      // 移动旧首的指针
-      oldStartVnode = oldChildren[++oldStartIdx];
     }
   }
   // 双端对比结束
@@ -165,7 +203,8 @@ function updateChildren(parentElement, oldChildren, newChildren) {
     // 旧节点先遍历完，添加剩余新节点
     addVnodes(parentElement, newChildren, newStartIdx, newEndIdx);
     // 旧列表遍历完了，说明旧列表有剩，需要删除旧列表中剩余的节点
-  } else if (newStartIdx > newEndIdx) {
+  }
+  if (newStartIdx > newEndIdx) {
     // 新节点先遍历完，删除剩余旧节点
     removeVnodes(parentElement, oldChildren, oldStartIdx, oldEndIdx);
   }
