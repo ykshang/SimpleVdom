@@ -1,5 +1,5 @@
-import h from "./diy/h.js";
-import { patch } from "./diy/patch.js";
+import h from "./diff/h.js";
+import { patch } from "./diff/patch.js";
 
 const container = document.getElementById("container");
 
