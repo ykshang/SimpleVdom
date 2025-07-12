@@ -76,9 +76,21 @@ function patchVnode(oldVnode, newVnode) {
 /**
  * 辅助函数
  */
-function outputCurrentStatus(parentElement, oldChildren, newChildren) {
-  console.log("------------------当前状态------------------");
-  console.log(new Date().toLocaleTimeString());
+function outputCurrentStatus(
+  parentElement,
+  oldChildren,
+  newChildren,
+  oldStartIdx,
+  oldEndIdx,
+  newStartIdx,
+  newEndIdx
+) {
+  console.log(
+    "------------------当前状态：",
+    new Date().toLocaleTimeString(),
+    "------------------"
+  );
+  console.log();
   // 输出当前dom节点列表
   let len = parentElement.children.length;
   let childElmList = [];
@@ -86,7 +98,6 @@ function outputCurrentStatus(parentElement, oldChildren, newChildren) {
     const element = parentElement.children[i];
     childElmList.push(element.innerHTML);
   }
-  console.log("当前dom节点：" + childElmList.join(", "));
 
   // 输出当前的旧节点列表
   let oldChildrenList = [];
@@ -98,22 +109,42 @@ function outputCurrentStatus(parentElement, oldChildren, newChildren) {
       oldChildrenList.push("undefined");
     }
   }
-  console.log("当前旧节点：" + oldChildrenList.join(", "));
   // 输出当前的新节点列表
   // 输出当前的旧节点列表
   let newChildrenList = [];
   for (let j = 0; j < newChildren.length; j++) {
     newChildrenList.push(newChildren[j].text);
   }
-  console.log("当前新节点：" + newChildrenList.join(", "));
-}
+  console.log("旧列表：" + oldChildrenList.join(", "));
+  console.log("新列表：" + newChildrenList.join(", "));
+  console.log("当前的：" + childElmList.join(", "));
+  let oldStartVnode = oldChildren[oldStartIdx] || { text: "undefined" };
+  let oldEndVnode = oldChildren[oldEndIdx] || { text: "undefined" };
+  let newStartVnode = newChildren[newStartIdx] || { text: "undefined" };
+  let newEndVnode = newChildren[newEndIdx] || { text: "undefined" };
 
+  console.log(
+    "旧首",
+    oldStartVnode.text,
+    oldStartIdx,
+    "，新首",
+    newStartVnode.text,
+    newStartIdx
+  );
+  console.log(
+    "旧尾",
+    oldEndVnode.text,
+    oldEndIdx,
+    "，新尾",
+    newEndVnode.text,
+    newEndIdx
+  );
+}
 /**
  * 对比子节点
  * @param {*} params
  */
 function updateChildren(parentElement, oldChildren, newChildren) {
-  outputCurrentStatus(parentElement, oldChildren, newChildren);
   let oldStartIdx = 0;
   let oldEndIdx = oldChildren.length - 1;
   let newStartIdx = 0;
@@ -123,34 +154,115 @@ function updateChildren(parentElement, oldChildren, newChildren) {
   let newStartVnode = newChildren[newStartIdx];
   let newEndVnode = newChildren[newEndIdx];
   let oldChKeyMap = null;
+  debugger;
   while (oldStartIdx <= oldEndIdx && newStartIdx <= newEndIdx) {
+    outputCurrentStatus(
+      parentElement,
+      oldChildren,
+      newChildren,
+      oldStartIdx,
+      oldEndIdx,
+      newStartIdx,
+      newEndIdx
+    );
+    debugger;
     // 在处理过程中，情况5，可能会将已处理的节点置为undefined
     // 需要判断，如果为undefined，需要跳过，移动指针
     if (isUnDef(oldStartVnode)) {
+      outputCurrentStatus(
+        parentElement,
+        oldChildren,
+        newChildren,
+        oldStartIdx,
+        oldEndIdx,
+        newStartIdx,
+        newEndIdx
+      );
+      debugger;
       oldStartVnode = oldChildren[++oldStartIdx];
     } else if (isUnDef(oldEndVnode)) {
+      outputCurrentStatus(
+        parentElement,
+        oldChildren,
+        newChildren,
+        oldStartIdx,
+        oldEndIdx,
+        newStartIdx,
+        newEndIdx
+      );
+      debugger;
       oldEndVnode = oldChildren[--oldEndIdx];
     } else if (isUnDef(newStartVnode)) {
+      outputCurrentStatus(
+        parentElement,
+        oldChildren,
+        newChildren,
+        oldStartIdx,
+        oldEndIdx,
+        newStartIdx,
+        newEndIdx
+      );
+      debugger;
       newStartVnode = newChildren[++newStartIdx];
     } else if (isUnDef(newEndVnode)) {
+      outputCurrentStatus(
+        parentElement,
+        oldChildren,
+        newChildren,
+        oldStartIdx,
+        oldEndIdx,
+        newStartIdx,
+        newEndIdx
+      );
+      debugger;
       newEndVnode = newChildren[--newEndIdx];
     } else if (sameNode(oldStartVnode, newStartVnode)) {
       // 新首 vs 旧首
-      console.log("命中 1：新尾 vs 旧尾");
+      outputCurrentStatus(
+        parentElement,
+        oldChildren,
+        newChildren,
+        oldStartIdx,
+        oldEndIdx,
+        newStartIdx,
+        newEndIdx
+      );
+      console.log("命中 1：新首 vs 旧首");
+      debugger;
       patchVnode(oldStartVnode, newStartVnode); // 相同节点，精细化比较
       // 向后移动旧首、新首的指针
       oldStartVnode = oldChildren[++oldStartIdx];
       newStartVnode = newChildren[++newStartIdx];
     } else if (sameNode(oldEndVnode, newEndVnode)) {
       // 新尾 vs 旧尾
+      outputCurrentStatus(
+        parentElement,
+        oldChildren,
+        newChildren,
+        oldStartIdx,
+        oldEndIdx,
+        newStartIdx,
+        newEndIdx
+      );
       console.log("命中 2：新尾 vs 旧尾");
+      debugger;
       patchVnode(oldEndVnode, newEndVnode); // 相同节点，精细化比较
       // 向后移动新尾、旧尾的指针
       oldEndVnode = oldChildren[--oldEndIdx];
       newEndVnode = newChildren[--newEndIdx];
     } else if (sameNode(oldStartVnode, newEndVnode)) {
       // 新尾 vs 旧首
+      outputCurrentStatus(
+        parentElement,
+        oldChildren,
+        newChildren,
+        oldStartIdx,
+        oldEndIdx,
+        newStartIdx,
+        newEndIdx
+      );
       console.log("命中 3：新尾 vs 旧首");
+      debugger;
       patchVnode(oldStartVnode, newEndVnode); // 相同节点，精细化比较
       // 移动旧首节点到旧尾节点的前边
       parentElement.insertBefore(oldStartVnode.element, oldEndVnode.element);
@@ -159,7 +271,17 @@ function updateChildren(parentElement, oldChildren, newChildren) {
       newEndVnode = newChildren[--newEndIdx];
     } else if (sameNode(oldEndVnode, newStartVnode)) {
       // 新首 vs 旧尾
+      outputCurrentStatus(
+        parentElement,
+        oldChildren,
+        newChildren,
+        oldStartIdx,
+        oldEndIdx,
+        newStartIdx,
+        newEndIdx
+      );
       console.log("命中 4：新首 vs 旧尾");
+      debugger;
       patchVnode(oldEndVnode, newStartVnode); // 相同节点，精细化比较
       parentElement.insertBefore(oldEndVnode.element, newStartVnode.element);
       // 移动旧尾、新首的指针
@@ -167,7 +289,17 @@ function updateChildren(parentElement, oldChildren, newChildren) {
       newStartVnode = newChildren[++newStartIdx];
     } else {
       // 以上情况都不满足
+      outputCurrentStatus(
+        parentElement,
+        oldChildren,
+        newChildren,
+        oldStartIdx,
+        oldEndIdx,
+        newStartIdx,
+        newEndIdx
+      );
       console.log("命中 5：循环查找");
+      debugger;
       // 循环查找，可以考虑使用map提高下一次的效率。
       // 将剩余没匹配过的节点，创建 key 索引
       if (!oldChKeyMap) {
@@ -175,6 +307,16 @@ function updateChildren(parentElement, oldChildren, newChildren) {
       }
       let idxInOld = oldChKeyMap[newStartVnode.key];
       if (isUnDef(idxInOld)) {
+        outputCurrentStatus(
+          parentElement,
+          oldChildren,
+          newChildren,
+          oldStartIdx,
+          oldEndIdx,
+          newStartIdx,
+          newEndIdx
+        );
+        debugger;
         // 旧节点列表中没有新节点的 key
         // 直接添加新节点
         if (isUnDef(newStartVnode.element)) {
@@ -187,6 +329,16 @@ function updateChildren(parentElement, oldChildren, newChildren) {
         // 移动旧首的指针
         oldStartVnode = oldChildren[++oldStartIdx];
       } else {
+        outputCurrentStatus(
+          parentElement,
+          oldChildren,
+          newChildren,
+          oldStartIdx,
+          oldEndIdx,
+          newStartIdx,
+          newEndIdx
+        );
+        debugger;
         // 旧节点列表中存在新节点的 key
         // 移动旧节点到新节点的前边
         const elementToMove = oldChildren[idxInOld];
@@ -199,12 +351,43 @@ function updateChildren(parentElement, oldChildren, newChildren) {
   }
   // 双端对比结束
   // 旧列表遍历完了，说明新列表有剩，需要添加新列表中剩余的节点
+  outputCurrentStatus(
+    parentElement,
+    oldChildren,
+    newChildren,
+    oldStartIdx,
+    oldEndIdx,
+    newStartIdx,
+    newEndIdx
+  );
+  debugger;
+
   if (oldStartIdx > oldEndIdx) {
+    outputCurrentStatus(
+      parentElement,
+      oldChildren,
+      newChildren,
+      oldStartIdx,
+      oldEndIdx,
+      newStartIdx,
+      newEndIdx
+    );
+    debugger;
     // 旧节点先遍历完，添加剩余新节点
     addVnodes(parentElement, newChildren, newStartIdx, newEndIdx);
-    // 旧列表遍历完了，说明旧列表有剩，需要删除旧列表中剩余的节点
   }
+  // 旧列表遍历完了，说明旧列表有剩，需要删除旧列表中剩余的节点
   if (newStartIdx > newEndIdx) {
+    outputCurrentStatus(
+      parentElement,
+      oldChildren,
+      newChildren,
+      oldStartIdx,
+      oldEndIdx,
+      newStartIdx,
+      newEndIdx
+    );
+    debugger;
     // 新节点先遍历完，删除剩余旧节点
     removeVnodes(parentElement, oldChildren, oldStartIdx, oldEndIdx);
   }

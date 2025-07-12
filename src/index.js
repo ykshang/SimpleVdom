@@ -18,6 +18,7 @@ const vnode2 = h("ul", {}, [
   h("li", { key: "A" }, "A"),
   h("li", { key: "B" }, "B"),
   h("li", { key: "C" }, "C"),
+  h("li", { key: "D" }, "D"),
 ]);
 // const vnode2 = h("section", {}, '现在是文字');
 
