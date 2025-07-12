@@ -86,7 +86,16 @@ function updateChildren(parentElement, oldChildren, newChildren) {
   let oldEndVnode = oldChildren[oldEndIdx];
   let newStartVnode = newChildren[newStartIdx];
   let newEndVnode = newChildren[newEndIdx];
+  let oldChKeyMap = null;
   while (oldStartIdx <= oldEndIdx && newStartIdx <= newEndIdx) {
+    // 在处理过程中，情况5，可能会将已处理的节点置为undefined
+    // 需要判断，如果为undefined，需要跳过，移动指针
+    if (isUnDef(oldStartVnode)) {
+      oldStartVnode = oldChildren[++oldStartIdx];
+    } else if (isUnDef(oldEndVnode)) {
+      oldEndVnode = oldChildren[--oldEndIdx];
+    }
+
     if (sameNode(oldStartVnode, newStartVnode)) {
       // 新首 vs 旧首
       console.log("命中 1：新尾 vs 旧尾");
@@ -119,9 +128,35 @@ function updateChildren(parentElement, oldChildren, newChildren) {
       oldEndVnode = oldChildren[--oldEndIdx];
       newStartVnode = newChildren[++newStartIdx];
     } else {
-      console.log("命中 5：循环查找");
-
       // 以上情况都不满足
+      console.log("命中 5：循环查找");
+      // 循环查找，可以考虑使用map提高下一次的效率。
+      // 将剩余没匹配过的节点，创建 key 索引
+      if (!oldChKeyMap) {
+        oldChKeyMap = createKeyToOldIdx(oldChildren, oldStartIdx, oldEndIdx);
+      }
+      let idxInOld = oldChKeyMap[newStartVnode.key];
+      if (isUnDef(idxInOld)) {
+        // 旧节点列表中没有新节点的 key
+        // 直接添加新节点
+        if (isUnDef(newStartVnode.element)) {
+          newStartVnode.element = createElement(newStartVnode);
+        }
+        parentElement.insertBefore(
+          newStartVnode.element,
+          oldStartVnode.element
+        );
+      } else {
+        // 旧节点列表中存在新节点的 key
+        // 移动旧节点到新节点的前边
+        const elementToMove = oldChildren[idxInOld];
+        parentElement.insertBefore(
+          elementToMove.element,
+          oldStartVnode.element
+        );
+      }
+      // 移动旧首的指针
+      oldStartVnode = oldChildren[++oldStartIdx];
     }
   }
   // 双端对比结束
@@ -144,7 +179,24 @@ function updateChildren(parentElement, oldChildren, newChildren) {
  */
 function sameNode(oldVnode, newVnode) {
   return (
-    oldVnode.selector === newVnode.selector &&
-    oldVnode.key === newVnode.key
+    oldVnode.selector === newVnode.selector && oldVnode.key === newVnode.key
   );
+}
+/**
+ * 旧节点列表创建 key 索引
+ * @param {*} oldChildren
+ * @param {*} oldStartIdx
+ * @param {*} oldEndIdx
+ * @returns
+ */
+
+function createKeyToOldIdx(oldChildren, oldStartIdx, oldEndIdx) {
+  let keyToMap = {};
+  for (let i = oldStartIdx; i <= oldEndIdx; i++) {
+    let key = oldChildren[i].key;
+    if (isDef(key)) {
+      keyToMap[key] = i;
+    }
+  }
+  return keyToMap;
 }
