@@ -24,11 +24,11 @@ const vnode1 = h("ul", {}, [
 const container = document.getElementById("container");
 patch(container, vnode1);
 
-const vnode2 = h("ol", {}, [
+const vnode2 = h("ul", {}, [
   h("li", {id:'li-1', key: "li-1" }, "111"),
-  h("li", {id:'li-2', key: "li-2" }, "222"),
-  h("li", {id:'li-3', key: "li-3" }, "333"),
   h("li", {id:'li-4', key: "li-4" }, "444"),
+  h("li", {id:'li-3', key: "li-3" }, "333"),
+  h("li", {id:'li-5', key: "li-5" }, "555"),
 ]);
 
 // 点击按钮 将Vnode1 变更为 vnode2
