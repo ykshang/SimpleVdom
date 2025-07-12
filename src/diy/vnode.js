@@ -22,21 +22,22 @@ export function vnode(selector, data, children, text, element) {
   };
 }
 
-export function addVnodes(parentElement, vnodes, startIndex, endIndex) {
+export function addVnodes(parentElm, vnodes, startIndex, endIndex) {
+  // 遍历vnodes,将其对应的DOM节点挂载到parentElm上
   for (let i = startIndex; i <= endIndex; i++) {
     let ch = vnodes[i];
     // 需要判断对应的DOM节点是否存在。不能直接挂载。
     if (isUnDef(ch.element)) {
-      // 创建dom,并挂载到虚拟节点上
+      // 创建dom,并挂载到虚拟节点ch上
       ch.element = createElement(ch);
     }
-    // 追加到父元素上
-    parentElement.appendChild(ch.element);
+    // 根据位置插入到父元素上
+    parentElm.insertBefore(ch.element, parentElm.children[i]);
   }
 }
-export function removeVnodes(parentElement, vnodes, startIndex, endIndex) {
+export function removeVnodes(parentElm, vnodes, startIndex, endIndex) {
   for (let i = startIndex; i <= endIndex; i++) {
-    // 移除子DOM节点
-    parentElement.removeChild(vnodes[i].element);
+    // 根据下标逐个找到对应dom元素，并通过父节点移除
+    parentElm.removeChild(vnodes[i].element);
   }
 }
