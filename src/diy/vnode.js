@@ -1,3 +1,6 @@
+import { isUnDef } from "./util";
+import createElement from "./createElement";
+
 /**
  *
  * @param {*} selector 选择器
@@ -19,7 +22,12 @@ export function vnode(selector, data, children, text, element) {
 
 export function addVnodes(parentElement, vnodes, startIndex, endIndex) {
   for (let i = startIndex; i <= endIndex; i++) {
-    parentElement.appendChild(vnodes[i].element);
+    let ch = vnodes[i];
+    // 需要判断对应的DOM节点是否存在，不存在需要创建
+    if (isUnDef(ch.element)) {
+      ch.element = createElement(ch);
+    }
+    parentElement.appendChild(ch.element);
   }
 }
 export function removeVnodes(parentElement, vnodes, startIndex, endIndex) {
