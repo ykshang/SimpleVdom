@@ -53,7 +53,7 @@ function patchVnode(oldVnode, newVnode) {
     }
   } else {
     // newVnode 没有 text
-    console.log("newVnode 没有 text");
+    // console.log("newVnode 没有 text");
     // oldVnode 存在子节点列表
     if (isDef(oldVnode.children) && oldVnode.children.length > 0) {
       // 新老都有子节点，此时最复杂
@@ -89,18 +89,21 @@ function updateChildren(parentElement, oldChildren, newChildren) {
   while (oldStartIdx <= oldEndIdx && newStartIdx <= newEndIdx) {
     if (sameNode(oldStartVnode, newStartVnode)) {
       // 新首 vs 旧首
+      console.log("命中 1：新尾 vs 旧尾");
       patchVnode(oldStartVnode, newStartVnode); // 相同节点，精细化比较
       // 向后移动旧首、新首的指针
       oldStartVnode = oldChildren[++oldStartIdx];
       newStartVnode = newChildren[++newStartIdx];
     } else if (sameNode(oldEndVnode, newEndVnode)) {
       // 新尾 vs 旧尾
+      console.log("命中 2：新尾 vs 旧尾");
       patchVnode(oldEndVnode, newEndVnode); // 相同节点，精细化比较
       // 向后移动新尾、旧尾的指针
       oldEndVnode = oldChildren[--oldEndIdx];
       newEndVnode = newChildren[--newEndIdx];
     } else if (sameNode(oldStartVnode, newEndVnode)) {
       // 新尾 vs 旧首
+      console.log("命中 3：新尾 vs 旧首");
       patchVnode(oldStartVnode, newEndVnode); // 相同节点，精细化比较
       // 移动旧首节点到旧尾节点的前边
       parentElement.insertBefore(oldStartVnode.element, oldEndVnode.element);
@@ -109,13 +112,15 @@ function updateChildren(parentElement, oldChildren, newChildren) {
       newEndVnode = newChildren[--newEndIdx];
     } else if (sameNode(oldEndVnode, newStartVnode)) {
       // 新首 vs 旧尾
+      console.log("命中 4：新首 vs 旧尾");
       patchVnode(oldEndVnode, newStartVnode); // 相同节点，精细化比较
       parentElement.insertBefore(oldEndVnode.element, newStartVnode.element);
       // 移动旧尾、新首的指针
       oldEndVnode = oldChildren[--oldEndIdx];
       newStartVnode = newChildren[++newStartIdx];
     } else {
-      console.log("以上情况都不满足");
+      console.log("命中 5：循环查找");
+
       // 以上情况都不满足
     }
   }
